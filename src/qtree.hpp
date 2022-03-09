@@ -2,12 +2,16 @@
 #define _QTREE_H_
 
 #include <vector>
+#include <memory>
 
 template <typename TreeData>
 class Node
 {
 public:
-    std::vector<Node*> leaves;
+    std::unique_ptr<Node> leaf0;
+    std::unique_ptr<Node> leaf1;
+    std::unique_ptr<Node> leaf2;
+    std::unique_ptr<Node> leaf3;
     
     bool hasLeaf = false;
     

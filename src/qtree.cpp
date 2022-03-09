@@ -1,7 +1,6 @@
 #include "qtree.hpp"
 #include <tuple>
 #include <algorithm>
-#include <optional>
 
 template <typename TreeData>
 void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
@@ -29,7 +28,7 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
     if (!q1.empty() && depth >= 1)
     {
         this->hasLeaf = true;
-        leaves.emplace_back(Node<TreeData>(q1, this->width / 2.0, this->height / 2.0,
+        leaf0 = std::make_unique<Node<TreeData>>(Node<TreeData>(q1, this->width / 2.0, this->height / 2.0,
                                 this->posX, this->posY));
         
         generateLeaf(depth - 1, q1);
@@ -38,7 +37,7 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
     if (!q2.empty() && depth >= 1)
     {
         this->hasLeaf = true;
-        leaves.emplace_back(Node<TreeData>(q2, this->width / 2.0, this->height / 2.0, 
+        leaf1 = std::make_unique<Node<TreeData>>(Node<TreeData>(q2, this->width / 2.0, this->height / 2.0, 
                                 this->posX + (this->width / 2.0), this->posY));
         
         generateLeaf(depth - 1, q2);
@@ -47,7 +46,7 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
     if (!q3.empty() && depth >= 1)
     {
         this->hasLeaf = true;
-        leaves.emplace_back(Node<TreeData>(q3, this->width / 2.0, this->height / 2.0, 
+        leaf2 = std::make_unique<Node<TreeData>>(Node<TreeData>(q3, this->width / 2.0, this->height / 2.0, 
                                 this->posX, this->posY + (this->height / 2.0)));
         
         generateLeaf(depth - 1, q3);
@@ -56,7 +55,7 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
     if (!q4.empty() && depth >= 1)
     {
         this->hasLeaf = true;
-        leaves.emplace_back(Node<TreeData>(q4, this->width / 2.0, this->height / 2.0, 
+        leaf3 = std::make_unique<Node<TreeData>>(Node<TreeData>(q4, this->width / 2.0, this->height / 2.0, 
                                 this->posX + (this->width / 2.0), this->posY + this->height / 2.0));
         
         generateLeaf(depth - 1, q4);
@@ -65,28 +64,28 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
 // O(nlog(n)) time complexity
 
 template <typename TreeData>
-double CalcTotalMass(Node<TreeData> &node)
+double CalcTotalMass(Node<TreeData> *node)
 {
     double mass = 0;
-    std::for_each(node.bodies.begin(), node.bodies.end(),
+    std::for_each(node->bodies.begin(), node->bodies.end(),
                      [mass](const auto &x) {mass += x.mass;});
 
     return mass;
 }
 
 template <typename TreeData>
-std::tuple<double, double> CalcCOM(Node<TreeData> &node)
+std::tuple<double, double> CalcCOM(Node<TreeData> *node)
 {
     double mass = 0;
-    std::for_each(node.bodies.begin(), node.bodies.end(), 
+    std::for_each(node->bodies.begin(), node->bodies.end(), 
                     [mass](const auto &x) {mass += x.mass;});
 
     double massDistX = 0;
-     std::for_each(node.bodies.begin(), node.bodies.end(), 
+     std::for_each(node->bodies.begin(), node->bodies.end(), 
                     [mass](const auto &x) {mass += (x.mass * x.x);});
 
     double massDistY = 0;
-    std::for_each(node.bodies.begin(), node.bodies.end(), 
+    std::for_each(node->bodies.begin(), node->bodies.end(), 
                     [mass](const auto &x) {mass += (x.mass * x.y);});
 
     return std::make_tuple(massDistX / mass, massDistY / mass);
@@ -96,26 +95,26 @@ template <typename TreeData>
 std::vector<Node<TreeData>> leaves;
 
 template <typename TreeData>
-void leafNodes(Node<TreeData> &root)
+void leafNodes(Node<TreeData> *root)
 {
     if (!root)
         return;
     
-    if (!root.hasLeaf)
+    if (!root->hasLeaf)
     {
         leaves<TreeData>.push_back(root);
         return;
     }
 
-    if (root.leaves.at(0)) 
-        leafNodes(root.leaves.at(0));
+    if (root->leaf0) 
+        leafNodes(root->leaf0);
 
-    if (root.leaves.at(1)) 
-        leafNodes(root.leaves.at(1));
+    if (root->leaf1) 
+        leafNodes(root->leaf1);
 
-    if (root.leaves.at(2)) 
-        leafNodes(root.leaves.at(2));
+    if (root->leaf2) 
+        leafNodes(root->leaf2);
 
-    if (root.leaves.at(3)) 
-        leafNodes(root.leaves.at(3));
+    if (root->leaf3) 
+        leafNodes(root->leaf3);
 }//O(n) time complexity
