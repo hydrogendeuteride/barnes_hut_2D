@@ -3,8 +3,8 @@
 
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/src/Core/Matrix.h>
-#include <tuple>
 #include "qtree.hpp"
+#include <functional>
 
 constexpr double THETA = 0.5;
 constexpr double G_CONST = 1.0;

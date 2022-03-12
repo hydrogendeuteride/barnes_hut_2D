@@ -1,6 +1,6 @@
 #include <iostream>
-#include <memory>
-#include <vector>
+#include <SFML/Graphics.hpp>
+#include "physics.hpp"
 
 int main()
 {

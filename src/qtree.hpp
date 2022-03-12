@@ -5,6 +5,9 @@
 #include <memory>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/src/Core/Matrix.h>
+#include <tuple>
+#include <algorithm>
+#include <numeric>
 
 typedef Eigen::Vector2d vec2;
 

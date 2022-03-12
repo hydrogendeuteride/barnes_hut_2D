@@ -1,7 +1,4 @@
 #include "qtree.hpp"
-#include <tuple>
-#include <algorithm>
-#include <numeric>
 
 template <typename TreeData>
 void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)

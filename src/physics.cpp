@@ -1,10 +1,4 @@
 #include "physics.hpp"
-#include "qtree.hpp"
-#include <functional>
-#include <tuple>
-#include <optional>
-#include <eigen3/Eigen/Dense>
-#include <vector>
 
 template<typename TreeData>
 void treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *rootNode, double timestep, 
