@@ -3,6 +3,19 @@
 
 #include <vector>
 #include <memory>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/src/Core/Matrix.h>
+
+typedef Eigen::Vector2d vec2;
+
+constexpr int MAX_DEPTH = 100;
+
+struct body
+{
+    vec2 x;
+    vec2 v;
+    double mass;
+};
 
 template <typename TreeData>
 class Node
@@ -28,5 +41,17 @@ public:
     
     ~Node();
 };
+
+template <typename TreeData>
+double CalcTotalMass(Node<TreeData> *node);
+
+template <typename TreeData>
+vec2 CalcCOM(Node<TreeData> *node);
+
+template <typename TreeData>
+std::vector<Node<TreeData>> leaves;
+
+template <typename TreeData>
+void leafNodes(Node<TreeData> *root);
 
 #endif
