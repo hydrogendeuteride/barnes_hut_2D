@@ -18,6 +18,8 @@ struct body
     vec2 x;
     vec2 v;
     double mass;
+
+    body(vec2 x, vec2 v, double mass) : x(x), v(v), mass(mass){};
 };
 
 template <typename TreeData>
@@ -41,7 +43,8 @@ public:
     Node(std::vector<TreeData> &b, double w, double h, double x, double y) : bodies(b), width(w), height(h), posX(x), posY(y) {};
     
     void generateLeaf(int depth, std::vector<TreeData> &bodies);
-    
+    void reset();
+
     ~Node();
 };
 

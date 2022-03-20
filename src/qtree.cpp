@@ -62,6 +62,15 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
 // O(nlog(n)) time complexity
 
 template <typename TreeData>
+void Node<TreeData>::reset()
+{
+    leaf0->reset();
+    leaf1->reset();
+    leaf2->reset();
+    leaf3->reset();
+}
+
+template <typename TreeData>
 double CalcTotalMass(Node<TreeData> *node)
 {
     return std::accumulate(node->bodies.begin(), node->bodies.end(), 0,

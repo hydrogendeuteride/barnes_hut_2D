@@ -21,11 +21,10 @@ void treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *rootNode, double ti
             double leafmass = leafNode->bodies.at(0).mass;
             double rootmass = CalcTotalMass(rootNode);
 
-            vec2 vel_1, pos_1;
-            std::make_tuple(vel_1, pos_1) = Integrator(vel, pos, leafmass, rootmass, dist_v, timestep); 
+            std::make_tuple(vel, pos) = Integrator(vel, pos, leafmass, rootmass, dist_v, timestep); 
             
-            leafNode->bodies.at(0).x = pos_1(0);
-            leafNode->bodies.at(0).v = vel_1(0);
+            leafNode->bodies.at(0).x += pos;
+            leafNode->bodies.at(0).v += vel;
         }
         else 
         {
@@ -37,8 +36,9 @@ void treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *rootNode, double ti
     }
 }
 
-std::tuple<vec2, vec2> semi_implict_euler(vec2 &v, vec2 &x, double leafMass, double rootMass,
-                                            vec2 &dist_v, double timestep)
+std::tuple<vec2, vec2> semi_implict_euler(const vec2 &v, const vec2 &x, 
+                                            const double leafMass, const double rootMass,
+                                            const vec2 &dist_v, const double timestep)
 {
     vec2 v_1, x_1;
     v_1 = v + acceleration(leafMass, rootMass, dist_v) * timestep;
@@ -47,7 +47,7 @@ std::tuple<vec2, vec2> semi_implict_euler(vec2 &v, vec2 &x, double leafMass, dou
     return std::make_tuple(v_1, x_1);
 }
 
-inline vec2 acceleration(double leafMass, double rootMass, vec2 &dist)
+inline vec2 acceleration(const double leafMass, const double rootMass, const vec2 &dist)
 {
     return -((G_CONST * leafMass * rootMass) / (std::pow(dist.norm(), 3))) * dist;
 }
