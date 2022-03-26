@@ -7,6 +7,8 @@
 #include "qtree.hpp"
 #include <random>
 #include <cmath>
+#include <tuple>
+#include <vector>
 
 sf::RenderWindow window(sf::VideoMode(1920, 1080), "barnes-hut");
 
@@ -20,15 +22,19 @@ void bodies_disk(std::vector<TreeData> bodies, unsigned int number, double width
 int main()
 {
     std::cout<<"testing"<<std::endl;
+    
+    std::vector<body> bodies;
+
+    return 0;
 }
 
 template<typename TreeData>
-void calculatemove(Node<TreeData> *root)
+void calculatemove(Node<TreeData> *root, std::vector<body> &bodies)
 {
-    leafNodes(root);
-    for (const auto& x : leaves<TreeData>) 
+    for (const auto& x : bodies) 
     {
-        treeTraversal(x, root, 1.0, semi_implict_euler);
+        x.v = std::get<0>(treeTraversal(x, root, 1.0, semi_implict_euler));
+        x.x = std::get<1>(treeTraversal(x, root, 1.0, semi_implict_euler));
     }
 }
 

@@ -54,10 +54,4 @@ double CalcTotalMass(Node<TreeData> *node);
 template <typename TreeData>
 vec2 CalcCOM(Node<TreeData> *node);
 
-template <typename TreeData>
-std::vector<Node<TreeData>> leaves;
-
-template <typename TreeData>
-void leafNodes(Node<TreeData> *root);
-
 #endif

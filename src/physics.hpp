@@ -12,7 +12,7 @@ constexpr double G_CONST = 1.0;
 typedef Eigen::Vector2d vec2;
 
 template<typename TreeData>
-std::tuple<vec2, vec2> treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *rootNode, double timestep, 
+std::tuple<vec2, vec2> treeTraversal(TreeData leaf, Node<TreeData> *rootNode, double timestep, 
                     std::function<std::tuple<vec2, vec2>(vec2 &p, vec2 &q, 
                     double leafMass, double rootMass, vec2 &dist_v, double timestep)> Integrator,
                     std::tuple<vec2, vec2> res = std::make_tuple(vec2(0.0, 0.0), vec2(0.0, 0.0)));

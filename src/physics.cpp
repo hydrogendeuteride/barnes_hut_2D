@@ -1,5 +1,6 @@
 #include "physics.hpp"
 #include <tuple>
+#include <vector>
 
 
 template <typename ... Ts, std::size_t ... Is>
@@ -14,7 +15,7 @@ std::tuple<Ts...> operator+ (std::tuple<Ts...> const & t1,
  { return sumT(t1, t2, std::make_index_sequence<sizeof...(Ts)>{}); }
 
 template<typename TreeData>
-std::tuple<vec2, vec2> treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *rootNode, double timestep, 
+std::tuple<vec2, vec2> treeTraversal(TreeData leaf, Node<TreeData> *rootNode, double timestep, 
                     std::function<std::tuple<vec2, vec2>(vec2 &p, vec2 &q, double leafMass,
                      double rootMass, vec2 &dist_v, double timestep)> Integrator, 
                      std::tuple<vec2, vec2> res)
@@ -23,7 +24,7 @@ std::tuple<vec2, vec2> treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *r
     {
         std::tuple<vec2, vec2> ret = std::make_tuple(vec2(0.0, 0.0), vec2(0.0, 0.0));
 
-        vec2 leafCOM  = CalcCOM(leafNode);
+        vec2 leafCOM  = leaf.x;
         vec2 rootCOM = CalcCOM(rootNode);
 
         vec2 dist_v = leafCOM - rootCOM;
@@ -31,10 +32,10 @@ std::tuple<vec2, vec2> treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *r
 
         if ((rootNode->width / dist <= THETA) || rootNode->hasLeaf == false)
         {
-            vec2 vel = leafNode->bodies.at(0).v;
-            vec2 pos = leafNode->bodies.at(0).x;
+            vec2 vel = leaf.v;
+            vec2 pos = leaf.x;
 
-            double leafmass = leafNode->bodies.at(0).mass;
+            double leafmass = leaf.mass;
             double rootmass = CalcTotalMass(rootNode);
 
             ret = Integrator(vel, pos, leafmass, rootmass, dist_v, timestep);            
@@ -42,10 +43,10 @@ std::tuple<vec2, vec2> treeTraversal(Node<TreeData> *leafNode, Node<TreeData> *r
         }
         else 
         {
-            return treeTraversal(leafNode, rootNode -> leaf0, timestep, Integrator, res + ret);
-            return treeTraversal(leafNode, rootNode -> leaf1, timestep, Integrator, res + ret);
-            return treeTraversal(leafNode, rootNode -> leaf2, timestep, Integrator, res + ret);
-            return treeTraversal(leafNode, rootNode -> leaf3, timestep, Integrator, res + ret);
+            return treeTraversal(leaf, rootNode -> leaf0, timestep, Integrator, res + ret);
+            return treeTraversal(leaf, rootNode -> leaf1, timestep, Integrator, res + ret);
+            return treeTraversal(leaf, rootNode -> leaf2, timestep, Integrator, res + ret);
+            return treeTraversal(leaf, rootNode -> leaf3, timestep, Integrator, res + ret);
         }
     }
 } // O(log N), recursion optimized

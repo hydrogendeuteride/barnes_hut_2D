@@ -87,28 +87,3 @@ vec2 CalcCOM(Node<TreeData> *node)
     
     return massDist / mass;
 }
-
-template <typename TreeData>
-void leafNodes(Node<TreeData> *root)
-{
-    if (root == nullptr)
-        return;
-    
-    if (!root->hasLeaf)
-    {
-        leaves<TreeData>.push_back(root);
-        return;
-    }
-
-    if (root->leaf0 != nullptr) 
-        leafNodes(root->leaf0);
-
-    if (root->leaf1 != nullptr) 
-        leafNodes(root->leaf1);
-
-    if (root->leaf2 != nullptr) 
-        leafNodes(root->leaf2);
-
-    if (root->leaf3 != nullptr) 
-        leafNodes(root->leaf3);
-}//O(n) time complexity
