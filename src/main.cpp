@@ -1,5 +1,6 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <algorithm>
 #include <complex>
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -31,12 +32,16 @@ int main()
 template<typename TreeData>
 void calculatemove(Node<TreeData> *root, std::vector<body> &bodies)
 {
+    std::vector<TreeData> bodies_new;
     for (const auto& x : bodies) 
     {
-        x.v = std::get<0>(treeTraversal(x, root, 1.0, semi_implict_euler));
-        x.x = std::get<1>(treeTraversal(x, root, 1.0, semi_implict_euler));
+        auto [vel, pos] = treeTraversal(x, root, 1.0, semi_implict_euler);
+        bodies_new.emplace_back(pos, vel, x.mass);
     }
+
+    bodies = std::move(bodies_new);
 }
+//https://stackoverflow.com/questions/69025611/c-how-do-i-return-2-values-using-tuple-and-autovalue1-value2-as-c-says
 
 template<typename TreeData>
 void bodies_uniform(std::vector<TreeData> &bodies, unsigned int number, double width, double height, 

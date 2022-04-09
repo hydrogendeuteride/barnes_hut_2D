@@ -1,7 +1,7 @@
 #include "qtree.hpp"
 
 template <typename TreeData>
-void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> &bodies)
+void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> bodies)
 {
     std::vector<TreeData> q1, q2, q3, q4;
 

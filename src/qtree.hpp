@@ -40,9 +40,10 @@ public:
 
     std::vector<TreeData> bodies;
 
-    Node(std::vector<TreeData> &b, double w, double h, double x, double y) : bodies(b), width(w), height(h), posX(x), posY(y) {};
+    Node(std::vector<TreeData> b, double w, double h, double x, double y) 
+        : bodies(std::move(b)), width(w), height(h), posX(x), posY(y) {};
     
-    void generateLeaf(int depth, std::vector<TreeData> &bodies);
+    void generateLeaf(int depth, std::vector<TreeData> bodies);
     void reset();
 
     ~Node();
