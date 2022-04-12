@@ -1,12 +1,18 @@
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/View.hpp>
 #include <SFML/Window/VideoMode.hpp>
-#include <complex>
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "physics.hpp"
 #include "qtree.hpp"
 #include <random>
 #include <cmath>
+
+constexpr double ViewHeight = 1920;
+constexpr double ViewWidth = 1080;
+
+constexpr double Simsize = 327680;
 
 sf::RenderWindow window(sf::VideoMode(1920, 1080), "barnes-hut");
 
@@ -19,7 +25,12 @@ void bodies_disk(std::vector<TreeData> bodies, unsigned int number, double width
 
 int main()
 {
-    std::cout<<"testing"<<std::endl;
+    sf::View View(sf::FloatRect(0, 0, ViewHeight / 2, ViewWidth / 2));
+
+    while (window.isOpen()) 
+    {
+
+    }
 }
 
 template<typename TreeData>
