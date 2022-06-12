@@ -40,11 +40,11 @@ public:
 
     std::vector<TreeData> bodies;
 
-    Node(std::vector<TreeData> b, double w, double h, double x, double y) 
-        : bodies(std::move(b)), width(w), height(h), posX(x), posY(y) {};
+    Node(std::vector<TreeData>&& b, double w, double h, double x, double y) //get rvalue (just move)
+        : bodies(b), width(w), height(h), posX(x), posY(y) {};
     
-    void generateLeaf(int depth, std::vector<TreeData> bodies);
-    void reset();
+    void generateLeaf(int depth, const std::vector<TreeData> &bodies);  //generate leaf recursively, arg = (initial depth = 0, bodies(reference, not changeable)) 
+    void reset();   //erase all nodes, bodies in leaves
 
     ~Node();
 };

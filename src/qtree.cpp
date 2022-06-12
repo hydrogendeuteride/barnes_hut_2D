@@ -1,8 +1,17 @@
 #include "qtree.hpp"
 
 template <typename TreeData>
-void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> bodies)
+void Node<TreeData>::generateLeaf(int depth, const std::vector<TreeData> &bodies)
 {
+/*
+                root(q1, q2...)
+        |               |...
+    node                node...
+(q1 ownership moved here)...                     ->first recursion
+        |
+    node
+(q1 ownership moved here)...                     ->second recursion...
+*/
     std::vector<TreeData> q1, q2, q3, q4;
 
     for (auto body : bodies)
@@ -26,8 +35,8 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> bodies)
     if (depth < MAX_DEPTH && q1.size() > 1)
     {
         this->hasLeaf = true;
-        leaf0 = std::make_unique<Node<TreeData>>(Node<TreeData>(q1, this->width / 2.0, this->height / 2.0,
-                                this->posX, this->posY));
+        leaf0 = std::make_unique<Node<TreeData>>(Node<TreeData>(std::move(q1), this->width / 2.0, this->height / 2.0,
+                                this->posX, this->posY)); //q1`s ownership is moved to leaf0, only the last leaf gets real body data
         
         generateLeaf(depth + 1, q1);
     }
@@ -35,7 +44,7 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> bodies)
     if (depth < MAX_DEPTH && q2.size() > 1)
     {
         this->hasLeaf = true;
-        leaf1 = std::make_unique<Node<TreeData>>(Node<TreeData>(q2, this->width / 2.0, this->height / 2.0, 
+        leaf1 = std::make_unique<Node<TreeData>>(Node<TreeData>(std::move(q2), this->width / 2.0, this->height / 2.0, 
                                 this->posX + (this->width / 2.0), this->posY));
         
         generateLeaf(depth + 1, q2);
@@ -44,7 +53,7 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> bodies)
     if (depth < MAX_DEPTH && q3.size() > 1)
     {
         this->hasLeaf = true;
-        leaf2 = std::make_unique<Node<TreeData>>(Node<TreeData>(q3, this->width / 2.0, this->height / 2.0, 
+        leaf2 = std::make_unique<Node<TreeData>>(Node<TreeData>(std::move(q3), this->width / 2.0, this->height / 2.0, 
                                 this->posX, this->posY + (this->height / 2.0)));
         
         generateLeaf(depth + 1, q3);
@@ -53,7 +62,7 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> bodies)
     if (depth < MAX_DEPTH && q4.size() > 1)
     {
         this->hasLeaf = true;
-        leaf3 = std::make_unique<Node<TreeData>>(Node<TreeData>(q4, this->width / 2.0, this->height / 2.0, 
+        leaf3 = std::make_unique<Node<TreeData>>(Node<TreeData>(std::move(q4), this->width / 2.0, this->height / 2.0, 
                                 this->posX + (this->width / 2.0), this->posY + this->height / 2.0));
         
         generateLeaf(depth + 1, q4);
@@ -64,21 +73,28 @@ void Node<TreeData>::generateLeaf(int depth, std::vector<TreeData> bodies)
 template <typename TreeData>
 void Node<TreeData>::reset()
 {
-    leaf0->reset();
-    leaf1->reset();
-    leaf2->reset();
-    leaf3->reset();
+    if(!this->hasLeaf)
+    {
+        leaf0->reset();
+        leaf1->reset();
+        leaf2->reset();
+        leaf3->reset();
+    }
+    else 
+    {
+        this->bodies.clear();
+    }
 }
 
 template <typename TreeData>
-double CalcTotalMass(Node<TreeData> *node)
+double CalcTotalMass(Node<TreeData> *node)//error: node hasn`t have bodies data
 {
     return std::accumulate(node->bodies.begin(), node->bodies.end(), 0,
                              [](double sum, const auto& x) {return sum + x.x.mass;});
 }
 
 template <typename TreeData>
-vec2 CalcCOM(Node<TreeData> *node)
+vec2 CalcCOM(Node<TreeData> *node)//error: node hasn`t have bodies data
 {
     double mass =  CalcTotalMass(node);
 
