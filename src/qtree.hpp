@@ -44,6 +44,9 @@ public:
         : bodies(b), width(w), height(h), posX(x), posY(y) {};
     
     void generateLeaf(int depth, const std::vector<TreeData> &bodies);  //generate leaf recursively, arg = (initial depth = 0, bodies(reference, not changeable)) 
+   
+    bool contains(vec2 x);
+   
     void reset();   //erase all nodes, bodies in leaves
 
     ~Node();

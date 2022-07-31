@@ -28,7 +28,8 @@ std::tuple<vec2, vec2> treeTraversal(TreeData leaf, Node<TreeData> *rootNode, do
     vec2 dist_v = leafCOM - rootCOM;
     double dist = dist_v.norm();
 
-    if ((rootNode->width / dist <= THETA) || rootNode->hasLeaf == false)
+    // ((dist ok) or (noleaf ok)) and no contains self node 
+    if ( ( (rootNode->width / dist <= THETA) || rootNode->hasLeaf == false ) )
     {
         vec2 vel = leaf.v;
         vec2 pos = leaf.x;
