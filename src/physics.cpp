@@ -2,6 +2,8 @@
 #include <tuple>
 #include <vector>
 
+//this file is wrong code at all
+//i`m fixing this code in simpler_one branch
 
 template <typename ... Ts, std::size_t ... Is>
 std::tuple<Ts...> sumT (std::tuple<Ts...> const & t1,
