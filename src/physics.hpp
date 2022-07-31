@@ -5,6 +5,7 @@
 #include <eigen3/Eigen/src/Core/Matrix.h>
 #include "qtree.hpp"
 #include <functional>
+#include <tuple>
 
 constexpr double THETA = 0.5;
 constexpr double G_CONST = 1.0;
@@ -12,16 +13,16 @@ constexpr double G_CONST = 1.0;
 typedef Eigen::Vector2d vec2;
 
 template<typename TreeData>
-std::tuple<vec2, vec2> treeTraversal(TreeData leaf, Node<TreeData> *rootNode, double timestep, 
-                    std::function<std::tuple<vec2, vec2>(vec2 &p, vec2 &q, 
-                    double leafMass, double rootMass, vec2 &dist_v, double timestep)> Integrator,
-                    std::tuple<vec2, vec2> res = std::make_tuple(vec2(0.0, 0.0), vec2(0.0, 0.0)));
+class BHtree
+{
+    inline vec2 Acceleration(const double leafMass, const double rootMass, const vec2 &dist); //calculate 1:! acceleration
 
-std::tuple<vec2, vec2> semi_implict_euler(const vec2 &v, const vec2 &x, 
-                                            const double leafMass, const double rootMass,
-                                            const vec2 &dist_v, const double timestep);
+    vec2 Net_Acceleration(TreeData& leaf, Node<TreeData> *rootNode); //calculate 1:n acceleration
 
+    std::tuple<vec2, vec2> Semi_Implict_Euler(const std::tuple<vec2, vec2>& Phase_Space, 
+                                           const vec2 &accel, const double timestep);
 
-inline vec2 acceleration(const double leafMass, const double rootMass, const vec2 &dist);
+    void Calc_Next_Phase_Space(TreeData& leaf, Node<TreeData> *rootNode, double timestep);
+};
 
  #endif

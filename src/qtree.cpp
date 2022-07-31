@@ -68,7 +68,7 @@ void Node<TreeData>::generateLeaf(int depth, const std::vector<TreeData> &bodies
         generateLeaf(depth + 1, q4);
     }
 }//Maybe recursion optimization on g++ -O2??
-// O(nlog(n)) time complexity
+// O(n log n) time complexity
 
 template <typename TreeData>
 bool Node<TreeData>::contains(vec2 x)
@@ -101,18 +101,18 @@ void Node<TreeData>::reset()
 }
 
 template <typename TreeData>
-double CalcTotalMass(Node<TreeData> *node)//error: node hasn`t have bodies data
+double Node<TreeData>::CalcTotalMass()
 {
-    return std::accumulate(node->bodies.begin(), node->bodies.end(), 0,
+    return std::accumulate(this->bodies.begin(), this->bodies.end(), 0,
                              [](double sum, const auto& x) {return sum + x.x.mass;});
 }
 
 template <typename TreeData>
-vec2 CalcCOM(Node<TreeData> *node)//error: node hasn`t have bodies data
+vec2 Node<TreeData>::CalcCOM()
 {
-    double mass =  CalcTotalMass(node);
+    double mass =  CalcTotalMass();
 
-    vec2 massDist = std::accumulate(node->bodies.begin(), node->bodies.end(), vec2(0, 0),
+    vec2 massDist = std::accumulate(this->bodies.begin(), this->bodies.end(), vec2(0, 0),
                         [](vec2 sum, const auto& x) {return sum + (x.mass * x.x);});
     
     return massDist / mass;

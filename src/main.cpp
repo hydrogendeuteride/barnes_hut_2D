@@ -15,11 +15,10 @@ constexpr double ViewWidth = 1080;
 constexpr double Simsize = 327680;
 
 
-
 sf::RenderWindow window(sf::VideoMode(1920, 1080), "barnes-hut");
 
 template<typename TreeData>
-void calculatemove(Node<TreeData> *root);
+void CalculateMove(Node<TreeData> *root, double timestep);
 
 template<typename TreeData>
 void bodies_disk(std::vector<TreeData> bodies, unsigned int number, double width, double height, 
@@ -28,7 +27,9 @@ void bodies_disk(std::vector<TreeData> bodies, unsigned int number, double width
 int main()
 {
     sf::View View(sf::FloatRect(0, 0, ViewHeight / 2, ViewWidth / 2));
-        
+    
+    std::vector<body> bodies;
+
     while (window.isOpen()) 
     {
         sf::Event event;
@@ -40,25 +41,16 @@ int main()
             
         }
     }
-    
-    std::vector<body> bodies;
 
     return 0;
 }
 
 template<typename TreeData>
-void calculatemove(Node<TreeData> *root, std::vector<body> &bodies)
+void CalculateMove(Node<TreeData> *root, std::vector<body> &bodies, double timestep)
 {
-    std::vector<TreeData> bodies_new;
-    for (const auto& x : bodies) 
-    {
-        auto [vel, pos] = treeTraversal(x, root, 1.0, semi_implict_euler);
-        bodies_new.emplace_back(pos, vel, x.mass);
-    }
-
-    bodies = std::move(bodies_new);
+    for (auto& x : bodies) 
+        Calc_Next_Phase_Space(x, root, timestep);
 }
-//https://stackoverflow.com/questions/69025611/c-how-do-i-return-2-values-using-tuple-and-autovalue1-value2-as-c-says
 
 template<typename TreeData>
 void bodies_uniform(std::vector<TreeData> &bodies, unsigned int number, double width, double height, 
