@@ -63,27 +63,13 @@ vec2 BHtree<TreeData>::Net_Acceleration(TreeData &leaf, Node<TreeData> *rootNode
 } // Iterative, O(n)
 
 template<typename TreeData>
-std::tuple<vec2, vec2> BHtree<TreeData>::Semi_Implict_Euler(const std::tuple<vec2, vec2>& Phase_Space, 
-                                            const vec2 &accel, const double timestep)
-{
-    auto [v_1, x_1] = Phase_Space;
-    vec2 x, v;
-    x << 0.0, 0.0;
-    v << 0.0, 0.0;
-
-    v_1 = v + accel * timestep;
-    x_1 = x + v_1 * timestep;
-
-    return std::make_tuple(x_1, v_1);
-}
-
-template<typename TreeData>
 void BHtree<TreeData>::Calc_Next_Phase_Space(TreeData& leaf, Node<TreeData> *rootNode, double timestep)
 {
     std::tuple<vec2, vec2> p = std::make_tuple(leaf.x, leaf.v);
     std::tuple<vec2, vec2> tmp;
 
-    tmp = Semi_Implict_Euler(p, Net_Acceleration(leaf, rootNode), timestep);
+    Integrator::Semi_Implicit_Euler euler;
+    tmp = euler(p, Net_Acceleration(leaf, rootNode), timestep);
 
     auto [x, v] = tmp;
     leaf.x = x;

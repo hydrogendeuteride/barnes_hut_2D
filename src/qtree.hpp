@@ -43,7 +43,7 @@ public:
     Node(std::vector<TreeData>&& b, double w, double h, double x, double y) //get rvalue (just move)
         : bodies(b), width(w), height(h), posX(x), posY(y) {};
     
-    void generateLeaf(int depth, const std::vector<TreeData> &bodies);  //generate leaf recursively, arg = (initial depth = 0, bodies(reference, not changeable)) 
+    void GenerateLeaf(int depth, const std::vector<TreeData> &bodies);  //generate leaf recursively, arg = (initial depth = 0, bodies(reference, not changeable)) 
    
     bool contains(vec2 x);
 
