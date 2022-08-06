@@ -43,7 +43,9 @@ public:
     Node(double w, double h, double x, double y) //get rvalue (just move)
         : width(w), height(h), posX(x), posY(y) {};
     
-    void GenerateLeaf(int depth, std::vector<TreeData> bodies);
+    void GenerateLeaf(int depth, std::vector<TreeData>&& bodies);
+
+    void GenerateLeaf(int depth, std::vector<TreeData>& bodies);
 
     bool contains(vec2 x);
 

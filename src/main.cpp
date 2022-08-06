@@ -8,6 +8,7 @@
 #include "qtree.hpp"
 #include <random>
 #include <cmath>
+#include <utility>
 #include <vector>
 
 constexpr double ViewHeight = 1920;
@@ -30,11 +31,14 @@ void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double s
 template <typename TreeData>
 void Boundary(std::vector<TreeData> &bodies);
 
+template<typename TreeData>
+void render(sf::RenderWindow& window, const std::vector<TreeData>& bodies);
+
 int main()
 {
     sf::View View(sf::FloatRect(0, 0, ViewHeight / 2, ViewWidth / 2));
 
-    std::vector<body> bodies(10000);
+    std::vector<body> bodies;
     Bodies_Uniform(bodies, 10000, Simsize , MinMass, MaxMass);
 
     Node<body> Root(Simsize, Simsize, 0.0, 0.0);
@@ -50,10 +54,12 @@ int main()
                 window.close();
         }
 
-        Root.GenerateLeaf(50, bodies);
+        Root.GenerateLeaf(50, std::forward<std::vector<body>>(bodies));
         CalculateMove(BH, bodies, &Root, 0.5);
         Boundary(bodies);
         Root.ResetNode();
+
+
     }
 
     return 0;
@@ -96,6 +102,18 @@ void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double s
         bodies.emplace_back(vec2(r(gen) * 0.3 + Simsize / 2.0, r(gen) * 0.3 + Simsize / 2.0),
                             vec2(1.0 / r(gen) * 0.3, 1.0 / r(gen) * 0.3), 
                             m(gen)); 
+        
+    }
+}
+
+template<typename TreeData>
+void render(sf::RenderWindow& window, const std::vector<TreeData>& bodies)
+{
+    window.clear();
+    
+    
+    for (const auto& x : bodies) 
+    {
         
     }
 }
