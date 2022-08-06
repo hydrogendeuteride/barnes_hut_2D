@@ -40,11 +40,11 @@ public:
 
     std::vector<TreeData> bodies;
 
-    Node(std::vector<TreeData>&& b, double w, double h, double x, double y) //get rvalue (just move)
-        : bodies(b), width(w), height(h), posX(x), posY(y) {};
+    Node(double w, double h, double x, double y) //get rvalue (just move)
+        : width(w), height(h), posX(x), posY(y) {};
     
-    void GenerateLeaf(int depth, const std::vector<TreeData> &bodies);  //generate leaf recursively, arg = (initial depth = 0, bodies(reference, not changeable)) 
-   
+    void GenerateLeaf(int depth, std::vector<TreeData> bodies);
+
     bool contains(vec2 x);
 
     double CalcTotalMass();
@@ -52,8 +52,6 @@ public:
     vec2 CalcCOM();
 
     void reset();   //erase all nodes, bodies in leaves
-
-    ~Node();
 };
 
 #endif

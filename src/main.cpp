@@ -22,11 +22,10 @@ constexpr double MaxMass = 5.0;
 sf::RenderWindow window(sf::VideoMode(1920, 1080), "barnes-hut");
 
 template<typename TreeData>
-void CalculateMove(Node<TreeData> *root, double timestep);
+void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, Node<TreeData> *root, double timestep);
 
 template<typename TreeData>
-void Bodies_Uniform(std::vector<TreeData> bodies, unsigned int number, double width, double height, 
-                    double mass_min, double mass_max);
+void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double size, double mass_min, double mass_max);
 
 template <typename TreeData>
 void Boundary(std::vector<TreeData> &bodies);
@@ -34,8 +33,14 @@ void Boundary(std::vector<TreeData> &bodies);
 int main()
 {
     sf::View View(sf::FloatRect(0, 0, ViewHeight / 2, ViewWidth / 2));
-    
+
     std::vector<body> bodies;
+    Bodies_Uniform(bodies, 10000, Simsize , MinMass, MaxMass);
+
+    Node<body> Root(Simsize, Simsize, 0.0, 0.0);
+    
+    BHtree<body> BH;
+    std::vector<body> tmp;
 
     while (window.isOpen()) 
     {
@@ -44,19 +49,20 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-
-            
         }
+        
+        Root.GenerateLeaf(50, bodies);
+        CalculateMove(BH, bodies, &Root, 0.5);
     }
 
     return 0;
 }
 
 template<typename TreeData>
-void CalculateMove(Node<TreeData> *root, std::vector<body> &bodies, double timestep)    //calculate one step
+void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, Node<TreeData> *root, double timestep)    //calculate one step
 {
     for (auto& x : bodies) 
-        Calc_Next_Phase_Space(x, root, timestep);
+        b.Calc_Next_Phase_Space(x, root, timestep);
 }
 
 template <typename TreeData>
@@ -75,8 +81,7 @@ void Boundary(std::vector<TreeData> &bodies)
 }
 
 template<typename TreeData>
-void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double width, double height, 
-                    double mass_min, double mass_max)
+void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double size, double mass_min, double mass_max)
 {
     std::random_device rand;
     std::mt19937 gen(rand());
@@ -86,8 +91,10 @@ void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double w
 
     for (int i = 0; i < number; i++) 
     {
+        
         bodies.emplace_back(vec2(r(gen) * 0.3 + Simsize / 2.0, r(gen) * 0.3 + Simsize / 2.0),
                             vec2(1.0 / r(gen) * 0.3, 1.0 / r(gen) * 0.3), 
-                            m); 
+                            m(gen)); 
+        
     }
 }

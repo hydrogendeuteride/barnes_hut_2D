@@ -19,6 +19,7 @@ class BHtree
 
     vec2 Net_Acceleration(TreeData& leaf, Node<TreeData> *rootNode); //calculate 1:n acceleration
 
+    public:
     void Calc_Next_Phase_Space(TreeData& leaf, Node<TreeData> *rootNode, double timestep);  //calculate next step
 };
 
