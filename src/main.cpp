@@ -57,7 +57,7 @@ int main()
     }
 
     return 0;
-}
+}//
 
 template<typename TreeData>
 void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, Node<TreeData> *root, double timestep)    //calculate one step
