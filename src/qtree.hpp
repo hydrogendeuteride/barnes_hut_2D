@@ -51,7 +51,7 @@ public:
 
     vec2 CalcCOM();
 
-    void reset();   //erase all nodes, bodies in leaves
+    void ResetNode();   //erase all nodes, bodies in leaves
 };
 
 #endif

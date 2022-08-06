@@ -34,13 +34,12 @@ int main()
 {
     sf::View View(sf::FloatRect(0, 0, ViewHeight / 2, ViewWidth / 2));
 
-    std::vector<body> bodies;
+    std::vector<body> bodies(10000);
     Bodies_Uniform(bodies, 10000, Simsize , MinMass, MaxMass);
 
     Node<body> Root(Simsize, Simsize, 0.0, 0.0);
     
     BHtree<body> BH;
-    std::vector<body> tmp;
 
     while (window.isOpen()) 
     {
@@ -50,9 +49,11 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-        
+
         Root.GenerateLeaf(50, bodies);
         CalculateMove(BH, bodies, &Root, 0.5);
+        Boundary(bodies);
+        Root.ResetNode();
     }
 
     return 0;
@@ -70,13 +71,13 @@ void Boundary(std::vector<TreeData> &bodies)
 {
     for (auto& body : bodies) 
     {
-        if ((std::get<0>(body.x) > Simsize && std::get<0>(body.v) > 0) 
-                    || (std::get<0>(body.x) < Simsize && std::get<0>(body.v) < 0)) //x axis
-            std::get<0>(body.x) = -std::get<0>(body.v); 
+        if ( (body.x(0,0) > Simsize && body.v(0,0) > 0) 
+                    || (body.x(0,0) < 0 && body.v(0,0) < 0)) //x axis
+            body.v(0,0) = -body.v(0,0); 
 
-        if ((std::get<1>(body.x) > Simsize && std::get<1>(body.v) > 0) 
-                    || (std::get<1>(body.x) < Simsize && std::get<1>(body.v) < 0))  //y axis
-            std::get<1>(body.x) = -std::get<1>(body.v);    
+        if ((body.x(1,0) > Simsize && body.v(1,0) > 0) 
+                    || (body.x(1,0) < Simsize && body.v(1,0) < 0))  //y axis
+            body.v(1,0) = -body.v(1,0);    
     }
 }
 

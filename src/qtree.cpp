@@ -1,4 +1,5 @@
 #include "qtree.hpp"
+#include <bits/types/FILE.h>
 
 template <typename TreeData>
 void Node<TreeData>::GenerateLeaf(int depth, std::vector<TreeData> bodies)
@@ -79,19 +80,21 @@ bool Node<TreeData>::contains(vec2 x)
 }
 
 template <typename TreeData>
-void Node<TreeData>::reset()
+void Node<TreeData>::ResetNode()
 {
-    if(!this->hasLeaf)
-    {
-        leaf0->reset();
-        leaf1->reset();
-        leaf2->reset();
-        leaf3->reset();
-    }
-    else 
-    {
-        this->bodies.clear();
-    }
+    bodies.clear();
+
+    leaf0->ResetNode();
+    leaf1->ResetNode();
+    leaf2->ResetNode();
+    leaf3->ResetNode();
+    
+    leaf0.reset();
+    leaf1.reset();
+    leaf2.reset();
+    leaf3.reset();
+
+    hasLeaf = false;
 }
 
 template <typename TreeData>
