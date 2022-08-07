@@ -1,6 +1,6 @@
 #include "qtree.hpp"
 #include <bits/types/FILE.h>
-
+/*
 template <typename TreeData>
 void Node<TreeData>::GenerateLeaf(int depth, std::vector<TreeData>&& bodies)
 {
@@ -177,4 +177,4 @@ vec2 Node<TreeData>::CalcCOM()
                         [](vec2 sum, const auto& x) {return sum + (x.mass * x.x);});
     
     return massDist / mass;
-}
+}*/

@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include "physics.hpp"
 #include "qtree.hpp"
+#include <memory>
 #include <random>
 #include <cmath>
 #include <utility>
@@ -23,7 +24,7 @@ constexpr double MaxMass = 5.0;
 sf::RenderWindow window(sf::VideoMode(1920, 1080), "barnes-hut");
 
 template<typename TreeData>
-void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, Node<TreeData> *root, double timestep);
+void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep);
 
 template<typename TreeData>
 void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double size, double mass_min, double mass_max);
@@ -41,7 +42,7 @@ int main()
     std::vector<body> bodies;
     Bodies_Uniform(bodies, 10000, Simsize , MinMass, MaxMass);
 
-    Node<body> Root(Simsize, Simsize, 0.0, 0.0);
+    std::shared_ptr<Node<body>> Root = std::make_shared<Node<body>>(Simsize, Simsize, 0.0, 0.0);
     
     BHtree<body> BH;
 
@@ -54,10 +55,10 @@ int main()
                 window.close();
         }
 
-        Root.GenerateLeaf(50, std::forward<std::vector<body>>(bodies));
-        CalculateMove(BH, bodies, &Root, 0.5);
+        Root->GenerateLeaf(50, std::forward<std::vector<body>>(bodies));
+        CalculateMove(BH, bodies, Root, 0.5);
         Boundary(bodies);
-        Root.ResetNode();
+        Root->ResetNode();
 
 
     }
@@ -66,7 +67,7 @@ int main()
 }
 
 template<typename TreeData>
-void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, Node<TreeData> *root, double timestep)    //calculate one step
+void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep)    //calculate one step
 {
     for (auto& x : bodies) 
         b.Calc_Next_Phase_Space(x, root, timestep);

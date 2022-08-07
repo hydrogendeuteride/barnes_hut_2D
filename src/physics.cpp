@@ -1,10 +1,9 @@
 #include "physics.hpp"
 #include "qtree.hpp"
-#include <tuple>
 #include <vector>
 #include <queue>
 
-template <typename ... Ts, std::size_t ... Is>
+/*template <typename ... Ts, std::size_t ... Is>
 std::tuple<Ts...> sumT (std::tuple<Ts...> const & t1,
                         std::tuple<Ts...> const & t2,
                         std::index_sequence<Is...> const &)
@@ -13,14 +12,14 @@ std::tuple<Ts...> sumT (std::tuple<Ts...> const & t1,
 template <typename ... Ts>
 std::tuple<Ts...> operator+ (std::tuple<Ts...> const & t1,
                              std::tuple<Ts...> const & t2)
- { return sumT(t1, t2, std::make_index_sequence<sizeof...(Ts)>{}); }
+ { return sumT(t1, t2, std::make_index_sequence<sizeof...(Ts)>{}); }*/
 
-template<typename TreeData>
+/*template<typename TreeData>
 inline vec2 BHtree<TreeData>::Acceleration(const double leafMass, const double rootMass, const vec2 &dist)
 {
     return -((G_CONST * leafMass * rootMass) / (std::pow(dist.norm(), 3))) * dist;
-}
-
+}*/
+/*
 template<typename TreeData>
 vec2 BHtree<TreeData>::Net_Acceleration(TreeData &leaf, Node<TreeData> *rootNode)
 {
@@ -61,7 +60,7 @@ vec2 BHtree<TreeData>::Net_Acceleration(TreeData &leaf, Node<TreeData> *rootNode
 
     return Net_acc;
 } // Iterative, O(n)
-
+*//*
 template<typename TreeData>
 void BHtree<TreeData>::Calc_Next_Phase_Space(TreeData& leaf, Node<TreeData> *rootNode, double timestep)
 {
@@ -75,3 +74,4 @@ void BHtree<TreeData>::Calc_Next_Phase_Space(TreeData& leaf, Node<TreeData> *roo
     leaf.x = x;
     leaf.v = v;
 }
+*/
