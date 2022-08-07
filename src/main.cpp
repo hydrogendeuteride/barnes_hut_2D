@@ -34,7 +34,8 @@ int main()
 {
     sf::View View(sf::FloatRect(0, 0, ViewHeight / 2, ViewWidth / 2));
 
-    std::vector<body> bodies(10000);
+    std::vector<body> bodies;
+    bodies.reserve(10000);
     Bodies_Uniform(bodies, 10000, Simsize , MinMass, MaxMass);
 
     Node<body> Root(Simsize, Simsize, 0.0, 0.0);
