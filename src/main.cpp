@@ -1,3 +1,5 @@
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
@@ -6,8 +8,10 @@
 #include <SFML/Graphics.hpp>
 #include "physics.hpp"
 #include "qtree.hpp"
+#include <memory>
 #include <random>
 #include <cmath>
+#include <utility>
 #include <vector>
 
 constexpr double ViewHeight = 1920;
@@ -22,7 +26,7 @@ constexpr double MaxMass = 5.0;
 sf::RenderWindow window(sf::VideoMode(1920, 1080), "barnes-hut");
 
 template<typename TreeData>
-void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, Node<TreeData> *root, double timestep);
+void CalculateMove(BHtree<TreeData>& b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep);
 
 template<typename TreeData>
 void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double size, double mass_min, double mass_max);
@@ -30,15 +34,17 @@ void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double s
 template <typename TreeData>
 void Boundary(std::vector<TreeData> &bodies);
 
+template<typename TreeData>
+void render(sf::RenderWindow& window, const std::vector<TreeData>& bodies);
+
 int main()
 {
     sf::View View(sf::FloatRect(0, 0, ViewHeight / 2, ViewWidth / 2));
 
     std::vector<body> bodies;
-    bodies.reserve(10000);
     Bodies_Uniform(bodies, 10000, Simsize , MinMass, MaxMass);
 
-    Node<body> Root(Simsize, Simsize, 0.0, 0.0);
+    std::shared_ptr<Node<body>> Root = std::make_shared<Node<body>>(bodies, Simsize, Simsize, 0.0, 0.0);
     
     BHtree<body> BH;
 
@@ -51,17 +57,19 @@ int main()
                 window.close();
         }
 
-        Root.GenerateLeaf(50, bodies);
-        CalculateMove(BH, bodies, &Root, 0.5);
+        GenLeaf_iterative(Root, 50);
+        CalculateMove(BH, bodies, Root, 0.5);
         Boundary(bodies);
-        Root.ResetNode();
+        Root->ResetNode();
+
+        render(window, bodies);
     }
 
     return 0;
 }//
 
 template<typename TreeData>
-void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, Node<TreeData> *root, double timestep)    //calculate one step
+void CalculateMove(BHtree<TreeData>& b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep)    //calculate one step
 {
     for (auto& x : bodies) 
         b.Calc_Next_Phase_Space(x, root, timestep);
@@ -99,4 +107,21 @@ void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double s
                             m(gen)); 
         
     }
+}
+
+template<typename TreeData>
+void render(sf::RenderWindow& window, const std::vector<TreeData>& bodies)
+{
+    window.clear(sf::Color::Black);
+    
+    sf::RectangleShape point;
+    for (const auto& x : bodies) 
+    {
+        point.setPosition(x.x(0,0), x.x(1,0));
+        point.setFillColor(sf::Color::White);
+
+        window.draw(point);
+    }
+
+    window.display();
 }
