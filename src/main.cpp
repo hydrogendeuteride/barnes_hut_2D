@@ -1,3 +1,5 @@
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/VideoMode.hpp>
@@ -24,7 +26,7 @@ constexpr double MaxMass = 5.0;
 sf::RenderWindow window(sf::VideoMode(1920, 1080), "barnes-hut");
 
 template<typename TreeData>
-void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep);
+void CalculateMove(BHtree<TreeData>& b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep);
 
 template<typename TreeData>
 void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double size, double mass_min, double mass_max);
@@ -60,14 +62,14 @@ int main()
         Boundary(bodies);
         Root->ResetNode();
 
-
+        render(window, bodies);
     }
 
     return 0;
 }
 
 template<typename TreeData>
-void CalculateMove(BHtree<TreeData> b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep)    //calculate one step
+void CalculateMove(BHtree<TreeData>& b, std::vector<TreeData> &bodies, std::shared_ptr<Node<TreeData>> root, double timestep)    //calculate one step
 {
     for (auto& x : bodies) 
         b.Calc_Next_Phase_Space(x, root, timestep);
@@ -110,11 +112,16 @@ void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double s
 template<typename TreeData>
 void render(sf::RenderWindow& window, const std::vector<TreeData>& bodies)
 {
-    window.clear();
+    window.clear(sf::Color::Black);
     
-    
+    sf::RectangleShape point;
     for (const auto& x : bodies) 
     {
-        
+        point.setPosition(x.x(0,0), x.x(1,0));
+        point.setFillColor(sf::Color::White);
+
+        window.draw(point);
     }
+
+    window.display();
 }
