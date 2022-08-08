@@ -89,7 +89,7 @@ void Boundary(std::vector<TreeData> &bodies)
             body.v(1,0) = -body.v(1,0);    
     }
 }
-
+//just for tidying branches
 template<typename TreeData>
 void Bodies_Uniform(std::vector<TreeData> &bodies, unsigned int number, double size, double mass_min, double mass_max)
 {
