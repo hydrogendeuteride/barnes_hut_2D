@@ -44,7 +44,7 @@ int main()
     std::vector<body> bodies;
     Bodies_Uniform(bodies, 10000, Simsize , MinMass, MaxMass);
 
-    std::shared_ptr<Node<body>> Root = std::make_shared<Node<body>>(Simsize, Simsize, 0.0, 0.0);
+    std::shared_ptr<Node<body>> Root = std::make_shared<Node<body>>(bodies, Simsize, Simsize, 0.0, 0.0);
     
     BHtree<body> BH;
 
@@ -57,7 +57,7 @@ int main()
                 window.close();
         }
 
-        Root->GenerateLeaf(50, std::forward<std::vector<body>>(bodies));
+        GenLeaf_iterative(Root, 50);
         CalculateMove(BH, bodies, Root, 0.5);
         Boundary(bodies);
         Root->ResetNode();
