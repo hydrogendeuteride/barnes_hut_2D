@@ -10,10 +10,11 @@
 #include <numeric>
 #include <queue>
 #include <stack>
+#include <algorithm>
 
 typedef Eigen::Vector2d vec2;
 
-constexpr int MAX_DEPTH = 100;
+constexpr int MAX_DEPTH = 100; //tree depth
 
 struct body
 {
@@ -45,10 +46,10 @@ public:
     Node(double w, double h, double x, double y) //empty node
         : width(w), height(h), posX(x), posY(y) {};
 
-    Node(std::vector<TreeData>& bodies, double w, double h, double x, double y) //copy
+    Node(std::vector<TreeData>& bodies, double w, double h, double x, double y) //copy all bodies, just for root node
         : bodies(bodies), width(w), height(h), posX(x), posY(y) {};
     
-    Node(std::vector<TreeData>&& bodies, double w, double h, double x, double y) //get rvalue (just move)
+    Node(std::vector<TreeData>&& bodies, double w, double h, double x, double y) //get rvalue (just move ownership), for all leaf nodes
         : bodies(bodies), width(w), height(h), posX(x), posY(y) {};
 
     bool contains(vec2 x);
@@ -56,22 +57,16 @@ public:
     double CalcTotalMass();
 
     vec2 CalcCOM();
-
-    void ResetNode();   //erase all nodes, bodies in leaves
 };
 
 template <typename TreeData>
-bool Node<TreeData>::contains(vec2 x)
+bool Node<TreeData>::contains(vec2 x) // replace this to vector::find
 {
-    for (auto& i : this->bodies) 
-    {
-        if (i.x == x) 
-        {
-            return true;
-        }
-    }
-
-    return false;
+    if (std::find(this->bodies.begin(), this->bodies.end(), x) == this->bodies.end())
+        return false;
+    
+    else
+        return true;
 }
 
 template <typename TreeData>
@@ -93,7 +88,7 @@ vec2 Node<TreeData>::CalcCOM()
 }
 
 template<typename TreeData>
-void GenLeaf_iterative(std::shared_ptr<Node<TreeData>> root, int depth)
+void GenLeaf_iterative(std::shared_ptr<Node<TreeData>> root, int depth)     //generate leaf iteratively, O(log n)
 {
     std::queue<std::shared_ptr<Node<TreeData>>> queue;
     queue.push(root);
@@ -105,7 +100,7 @@ void GenLeaf_iterative(std::shared_ptr<Node<TreeData>> root, int depth)
 
         std::vector<TreeData> q1, q2, q3, q4;
 
-        for (auto body1 : tmp->bodies)
+        for (auto& body1 : tmp->bodies)
         {
             if (body1.x(0,0) < (tmp->posX + (tmp->width / 2.0)))
             {
@@ -167,7 +162,7 @@ void GenLeaf_iterative(std::shared_ptr<Node<TreeData>> root, int depth)
 }
 
 template<typename TreeData>
-void Reset(std::shared_ptr<Node<TreeData>> root)
+void Reset(std::shared_ptr<Node<TreeData>> root) //iteratively delete bodies, leaves, O(log n)
 {
     std::stack<std::shared_ptr<Node<TreeData>>> stack, s2;
     std::shared_ptr<Node<TreeData>> node;
@@ -197,6 +192,7 @@ void Reset(std::shared_ptr<Node<TreeData>> root)
         node = s2.top();
         s2.pop();
 
+        node->hasLeaf = false;
         node->bodies.clear();
         node.reset();
     }

@@ -33,7 +33,7 @@ class BHtree
 
 {   
     public:
-    inline vec2 Acceleration(const double leafMass, const double rootMass, const vec2 &dist); //calculate 1:! acceleration
+    inline vec2 Acceleration(const double leafMass, const double rootMass, const vec2 &dist); //calculate 1:1 acceleration
 
     vec2 Net_Acceleration(TreeData& leaf, std::shared_ptr<Node<TreeData>> rootNode); //calculate 1:n acceleration
 
@@ -107,7 +107,7 @@ vec2 BHtree<TreeData>::Net_Acceleration(TreeData &leaf, std::shared_ptr<Node<Tre
     }
 
     return Net_acc;
-} // Iterative, O(n)
+} // Iterative, O(log n)
 
 template<typename TreeData>
 void BHtree<TreeData>::Calc_Next_Phase_Space(TreeData& leaf, std::shared_ptr<Node<TreeData>> rootNode, double timestep)
