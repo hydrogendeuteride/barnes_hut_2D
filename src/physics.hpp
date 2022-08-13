@@ -11,6 +11,7 @@
 
 constexpr double THETA = 0.5;
 constexpr double G_CONST = 0.1;
+constexpr double Softener = 5;
 
 typedef Eigen::Vector2d vec2;
 
@@ -64,7 +65,7 @@ namespace Integrator
 template<typename TreeData>
 inline vec2 BHtree<TreeData>::Acceleration(const double leafMass, const double rootMass, const vec2 &dist)
 {
-    return -((G_CONST * leafMass * rootMass) / (std::pow(dist.norm(), 3))) * dist;
+    return -((G_CONST * leafMass * rootMass) / (std::pow(dist.norm() + Softener, 3))) * (dist + vec2(Softener, Softener));
 }
 
 template<typename TreeData>
