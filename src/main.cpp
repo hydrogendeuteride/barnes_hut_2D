@@ -60,7 +60,7 @@ int main()
         GenLeaf_iterative(Root, 50);
         CalculateMove(BH, bodies, Root, 0.5);
         Boundary(bodies);
-        Root->ResetNode();
+        Reset(Root);
 
         render(window, bodies);
     }

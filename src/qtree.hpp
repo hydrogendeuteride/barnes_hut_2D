@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <numeric>
 #include <queue>
+#include <stack>
 
 typedef Eigen::Vector2d vec2;
 
@@ -71,25 +72,6 @@ bool Node<TreeData>::contains(vec2 x)
     }
 
     return false;
-}
-
-template <typename TreeData>
-void Node<TreeData>::ResetNode()
-{
-    
-    bodies.clear();
-
-    leaf0->ResetNode();
-    leaf1->ResetNode();
-    leaf2->ResetNode();
-    leaf3->ResetNode();
-    
-    leaf0.reset();
-    leaf1.reset();
-    leaf2.reset();
-    leaf3.reset();
-
-    hasLeaf = false;
 }
 
 template <typename TreeData>
@@ -181,6 +163,42 @@ void GenLeaf_iterative(std::shared_ptr<Node<TreeData>> root, int depth)
             depth++;
             queue.push(tmp->leaf3);
         }
+    }
+}
+
+template<typename TreeData>
+void Reset(std::shared_ptr<Node<TreeData>> root)
+{
+    std::stack<std::shared_ptr<Node<TreeData>>> stack, s2;
+    std::shared_ptr<Node<TreeData>> node;
+    stack.push(root);
+
+    while (!stack.empty()) 
+    {
+        node = stack.top();
+        stack.pop();
+        s2.push(node);
+
+        if (node->leaf0 != nullptr) 
+            stack.push(node.leaf0);
+        
+        if (node->leaf1 != nullptr) 
+            stack.push(node.leaf1);
+        
+        if (node->leaf2 != nullptr) 
+            stack.push(node.leaf2);
+
+        if (node->leaf3 != nullptr) 
+            stack.push(node.leaf3);
+    }
+
+    while (!s2.empty()) 
+    {
+        node = s2.top();
+        s2.pop();
+
+        node->bodies.clear();
+        node.reset();
     }
 }
 
